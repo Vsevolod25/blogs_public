@@ -80,7 +80,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
             return redirect('blog:post_detail', pk=self.kwargs['pk'])
         get_object_or_404(Post, pk=kwargs['pk'], author=request.user)
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',

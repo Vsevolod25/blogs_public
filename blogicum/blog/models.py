@@ -2,8 +2,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
-from .validators import pub_date
-
 User = get_user_model()
 
 TITLE_LENGTH = 256
