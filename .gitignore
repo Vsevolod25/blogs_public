@@ -150,3 +150,10 @@ media/
 
 sent_emails/
 
+.json
+.sqlite3
+.sqlite
+
+blogicum/db.json
+blogicum/db.sqlite3
+blogicum/static_dev/css/
