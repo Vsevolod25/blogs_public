@@ -17,9 +17,7 @@ from .models import Category, Comment, Post
 
 User = get_user_model()
 
-PAGINATE_CONST = 10
-
-POSTS_PK_CONST = 'post_id'
+PAGINATE = 10
 
 
 def posts():
@@ -36,7 +34,7 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/index.html'
     queryset = posts()
-    paginate_by = PAGINATE_CONST
+    paginate_by = PAGINATE
 
 
 class PostDetailView(FormMixin, DetailView):
@@ -120,7 +118,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 class CategoryListView(ListView):
     model = Post
     template_name = 'blog/category.html'
-    paginate_by = PAGINATE_CONST
+    paginate_by = PAGINATE
 
     def get_queryset(self):
         self.category = get_object_or_404(
@@ -139,7 +137,7 @@ class CategoryListView(ListView):
 class ProfileListView(ListView):
     model = Post
     template_name = 'blog/profile.html'
-    paginate_by = PAGINATE_CONST
+    paginate_by = PAGINATE
 
     def get_queryset(self):
         self.profile = get_object_or_404(
@@ -195,27 +193,27 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 class CommentMixin:
     model = Comment
     form_class = CommentForm
-    pk_url_kwarg = POSTS_PK_CONST
+    pk_url_kwarg = 'post_id'
     template_name = 'blog/comment.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return redirect('blog:post_detail', self.kwargs[POSTS_PK_CONST])
+            return redirect('blog:post_detail', self.kwargs['post_id'])
         post = self.get_object()
         if post.author != request.user:
-            return redirect('blog:post_detail', self.kwargs[POSTS_PK_CONST])
+            return redirect('blog:post_detail', self.kwargs['post_id'])
         return super().dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy(
             'blog:post_detail',
-            kwargs={'pk': self.kwargs[POSTS_PK_CONST]}
+            kwargs={'pk': self.kwargs['post_id']}
         )
 
 
-class CommentUpdateView(CommentMixin, LoginRequiredMixin, UpdateView):
+class CommentUpdateView(LoginRequiredMixin, CommentMixin, UpdateView):
     pass
 
 
-class CommentDeleteView(CommentMixin, LoginRequiredMixin, DeleteView):
+class CommentDeleteView(LoginRequiredMixin, CommentMixin, DeleteView):
     pass
