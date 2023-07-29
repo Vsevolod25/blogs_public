@@ -103,9 +103,17 @@ class Comment(PublishedModel):
         related_name='comments',
         verbose_name='Публикация'
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments',
+        verbose_name='Автор публикации'
+    )
 
     class Meta:
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ('created_at',)
+
+    def __str__(self) -> str:
+        return self.text
